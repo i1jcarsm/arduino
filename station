@@ -1,0 +1,76 @@
+const int led = 8;
+const int buzzer = 9;
+const int air = 1;
+const int temp = 0;
+const int luz = 2;
+
+void setup()
+{
+  pinMode(led, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+  pinMode(temp, INPUT);
+  pinMode(luz, INPUT);
+  pinMode(air, INPUT);
+  Serial.begin(9600);
+  
+}
+
+void loop()
+{
+  digitalWrite(led, HIGH);
+  /*temperatura*/
+  
+  float voltage = getVoltage(temp);
+
+  float degrees = (voltage - 0.5) * 100.0;
+  if(degrees > 100)
+  {
+    analogWrite(buzzer, 128);
+  }
+  /*luz*/
+  int lightlevel = analogRead(luz);
+  lightlevel = map(lightlevel, 0, 1024, 100, 0);
+  if(lightlevel >= 75)
+  {
+    Serial.println("Dia");
+  }
+  else if(30 < lightlevel < 75)
+  {
+    Serial.println("Tarde/nublado");
+  }
+  else if(lightlevel < 30)
+  {
+    Serial.println("Noche");
+  }
+  /*aire*/
+  int flexposition = analogRead(air);
+  flexposition = map(flexposition, 600, 900, 0, 100);
+  
+  
+  
+  
+  Serial.println(flexposition);
+  
+  Serial.print("Nivel de luz:  ");
+  Serial.print(lightlevel);
+  Serial.println("");
+  Serial.print("Grados:  "); 
+  Serial.print(degrees);
+  Serial.println("");
+  
+   
+  delay(1000);
+  
+  
+  
+  
+}
+
+
+  
+  
+
+float getVoltage(int pin)
+{
+  return (analogRead(pin) * 0.004882814);
+}
